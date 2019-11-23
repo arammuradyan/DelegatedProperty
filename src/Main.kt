@@ -6,7 +6,8 @@ fun main() {
     val massage="weak reference get() fun. returns null"
 
     // Example with String value
-    val stringValue = WeakRefKeeper("String in weak reference")
+    var stringValue = WeakRefKeeper("String in weak reference")
+    stringValue=WeakRefKeeper("new value")
     stringValue.value?.also { println(it) } ?: massage.also { println(it) }
 
 
@@ -16,18 +17,22 @@ fun main() {
 }
 
 class WeakRefKeeper<T>(value: T?) {
-    val value: T? by putInWeakRef(value)
+    var value: T? by putInWeakRef(value)
 }
 
 fun <R,T> putInWeakRef(value:T?): WeakDelegation<R,T> = WeakDelegation(WeakReference(value))
 
 class WeakDelegation<R, T>(
-    private val value: WeakReference<T?>
+    private var value: WeakReference<T?>
 )  {
 
     operator fun getValue(thisRef: R, property: KProperty<*>): T? {
         return value.get()
     }
 
+    operator fun setValue(thisRef: R, property: KProperty<*>, value: T?) {
+        this.value = WeakReference(value)
+
+    }
 }
 
