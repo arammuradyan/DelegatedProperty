@@ -16,8 +16,10 @@ fun main() {
 }
 
 class WeakRefKeeper<T>(value: T?) {
-    val value: T? by WeakDelegation<WeakRefKeeper<T>,T>(WeakReference(value))
+    val value: T? by putInWeakRef(value)
 }
+
+fun <R,T> putInWeakRef(value:T?): WeakDelegation<R,T> = WeakDelegation(WeakReference(value))
 
 class WeakDelegation<R, T>(
     private val value: WeakReference<T?>
